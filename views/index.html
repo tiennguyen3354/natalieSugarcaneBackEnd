@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Display</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .category {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    h1 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Category Menu</h1>
+  <div id="category-list"></div>
+
+  <script>
+    // Function to fetch categories from the backend API
+    async function fetchCategories() {
+      try {
+        const response = await fetch('http://168.231.67.207:8282/category');
+        if (!response.ok) {
+          throw new Error('Failed to fetch categories');
+        }
+
+        const data = await response.json();
+        const categories = data.result; // Accessing the 'result' array
+        displayCategories(categories);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        document.getElementById('category-list').innerHTML = '<p>Error loading categories. Please try again later.</p>';
+      }
+    }
+
+    // Function to display the categories on the page
+    function displayCategories(categories) {
+      const categoryList = document.getElementById('category-list');
+      categoryList.innerHTML = ''; // Clear previous content
+
+      categories.forEach(category => {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.classList.add('category');
+        categoryDiv.innerHTML = `
+          <h3>Category ID: ${category.id}</h3>
+          <p><strong>Name:</strong> ${category.name}</p>
+          <p><strong>Description:</strong> ${category.description}</p>
+        `;
+        categoryList.appendChild(categoryDiv);
+      });
+    }
+
+    // Call the fetchCategories function when the page loads
+    window.onload = fetchCategories;
+  </script>
+
+</body>
+</html>
