@@ -11,7 +11,7 @@ const getCategories = async () => {
 }
 
 const getCategoriesById = async (id) => { 
-    const [result] = await connection.query("SELECT * FROM Category WHERE category_id = ?", [id])
+    const [result] = await connection.query("SELECT * FROM Category WHERE id = ?", [id])
     if (result.length === 0) { 
         return null 
     } else { 
@@ -20,23 +20,22 @@ const getCategoriesById = async (id) => {
 }
 
 
-const addCategory = async (category_name, category_description) => { 
-    const [result] = await connection.query("INSERT INTO Category (category_name, category_description) VALUES (?, ?)", 
-        [category_name, category_description])
+const addCategory = async (name, category, price, description, imageBuffer) => { 
+    const [result] = await connection.query("INSERT INTO Category (name, category, price, description, image) VALUES (?, ?, ?, ?, ? )", 
+        [name, category ,price, description , imageBuffer])
     if (result.affectedRows === 0) { 
         return null; 
     } else { 
         return await getCategoriesById(result.insertId)
     }
 }
-const updateCategory = async (category_name, category_description, id) => { 
-    const [result] = await connection.query("UPDATE Category SET category_name = ?, category_description = ? WHERE category_id = ?", 
-        [category_name, category_description, id]
+const updateCategory = async (name, category, price, description, imageBuffer, id) => { 
+    const [result] = await connection.query("UPDATE Category SET name = ?, category = ?,  price = ?, description = ?, image = ? WHERE id = ?", 
+        [name, category, price, description, imageBuffer, id]
     )
     if (result.affectedRows === 0) { 
         return null; 
     } else { 
-
         return await getCategoriesById(id)
     }
 }
@@ -44,7 +43,7 @@ const updateCategory = async (category_name, category_description, id) => {
 
 const deleteCategory = async (id) => { 
     const itemBeingDeleted = await getCategoriesById(id)
-    const [result] = await connection.query("DELETE FROM Category WHERE category_id = ?", [id])
+    const [result] = await connection.query("DELETE FROM Category WHERE id = ?", [id])
     if (result.affectedRows === 0) { 
         return null 
     } else { 
